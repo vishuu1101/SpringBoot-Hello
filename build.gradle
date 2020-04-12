@@ -56,7 +56,7 @@ publishing {
             credentials {
                 username project.publish_username
                 password project.publish_password
-                url "http://localhost:8081/artifactory/libs-release-local"
+                url "http://172.17.0.2:8081/artifactory/libs-release-local"
             }
         }
     }
