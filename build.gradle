@@ -1,26 +1,29 @@
 buildscript {
     ext {
-        springBootVersion = '2.0.1.RELEASE'
+        springBootVersion = '2.1.13.RELEASE'
     }
     repositories {
         mavenCentral()
     }
     dependencies {
         classpath(
-          "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+                "org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'maven-publish'
 
-sourceCompatibility = 1.5
+sourceCompatibility = 1.8
 version = '1.0'
+group 'com.practice'
+
 jar {
     manifest {
         attributes 'Implementation-Title': 'Gradle Quickstart',
-                   'Implementation-Version': version
+                'Implementation-Version': version
     }
 }
 
@@ -29,19 +32,32 @@ repositories {
 }
 
 dependencies {
-compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '2.1.13.RELEASE'
-compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.13.RELEASE'
+    compile "org.springframework.boot:spring-boot-starter:${springBootVersion}"
+    compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
 
 }
 
-test {
-    systemProperties 'property': 'value'
+publish {
+    dependsOn assemble
 }
 
-uploadArchives {
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId rootProject.name
+            artifact jar {
+
+            }
+        }
+    }
+
     repositories {
-       flatDir {
-           dirs 'repos'
-       }
+        maven {
+            credentials {
+                username project.publish_username
+                password project.publish_password
+                url "http://localhost:8081/artifactory/libs-release-local"
+            }
+        }
     }
 }
